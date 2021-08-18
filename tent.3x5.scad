@@ -1,9 +1,7 @@
-
-extrude_height=5;
-tent_angle=[0,25,0];
-negative_tent_angle=[-tent_angle[0], -tent_angle[1], -tent_angle[2]];
-tent_cutout_z=30;
-post_height=0;
+tent_angle=25;
+tent_rotate=[0,tent_angle,0];
+post_height=5;
+offset_x=-8.8;
 
 // radius, rotate,    scale,       translate
 cutouts = [
@@ -16,26 +14,19 @@ cutouts = [
 main();
 
 module tentBody() {
-    difference() {
-        translate([-8.8,0,0])
-            linear_extrude(height=extrude_height, center=true, convexity=10)
-            import(file = "kyria-postless.dxf", $fn=100, convexity=10);
-
-        translate([0, -20, -3])
-            cube([128, 200, 5]);
-    }
-    
+    translate([offset_x, 0, 0])
+        linear_extrude(height=0.1, center=false, convexity=10)
+        import(file = "kyria-postless.dxf", $fn=100, convexity=10);
 }
 
 module tentPosts() {
-    translate([-11, 0, extrude_height/2]) difference() {
-        linear_extrude(height=extrude_height, center=true, convexity=10)
+    translate([offset_x, 0, 0]) difference() {
+        linear_extrude(height=post_height, center=false, convexity=10)
             import(file="kyria-postless.dxf", $fn=100);
-        linear_extrude(height=extrude_height, center=true, convexity=10)
+        linear_extrude(height=post_height, center=false, convexity=10)
             import(file="kyria-posted.dxf", $fn=100);
-        translate([0, -20, -3])
-            cube([128, 200, extrude_height+5]);
-       
+        translate([0, -21, -3])
+            cube([128, 200, 25]);
     }
 }
 
@@ -49,16 +40,15 @@ module cutout(inputs) {
 module main() {
     difference() {
         union() {
-            translate([0,0,-(post_height+0.1)])
-                rotate(a=tent_angle)
+            rotate(a=tent_rotate)
                 tentPosts();
 
             difference() {
                 linear_extrude(100)
                     projection(cut = false)
-                    rotate(a=tent_angle)
+                    rotate(a=tent_rotate)
                     tentBody();
-                rotate(a=tent_angle)
+                rotate(a=tent_rotate)
                     translate([-250,-80,0])
                     cube([250, 350, 100]);    
             }
