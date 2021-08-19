@@ -1,4 +1,4 @@
-tent_angle=25;
+tent_angle=6;
 tent_rotate=[0,tent_angle,0];
 post_height=5;
 offset_x=-8.8;
@@ -55,7 +55,7 @@ module main() {
         }
 
         translate([0, -25, -1])
-            cube([200, 150, 50]);
+            cube([200, 150, 500]);
         
         for (params=cutouts) {
             cutout(params);
